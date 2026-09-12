@@ -21,3 +21,4 @@ This project covers MongoDB fundamentals including database management, CRUD ope
 * **8-all.py:** Python function to list all documents in a collection.
 * **9-insert_school.py:** Python function to insert a document based on `kwargs`.
 * **10-update_topics.py:** Python function to update document topics by name.
+
