@@ -8,23 +8,23 @@ from pymongo import MongoClient
 
 def log_stats():
     """
-    Provides statistics about Nginx logs in MongoDB.
+    Provides stats about Nginx logs stored in MongoDB.
     """
     client = MongoClient('mongodb://127.0.0.1:27017')
     collection = client.logs.nginx
 
-    # Total documents count
+    # 1. Total logs
     total_logs = collection.count_documents({})
     print("{} logs".format(total_logs))
 
-    # Methods count
+    # 2. Methods count
     print("Methods:")
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     for method in methods:
         count = collection.count_documents({"method": method})
         print("\tmethod {}: {}".format(method, count))
 
-    # Status check
+    # 3. Status check count (GET method and path /status)
     status_check = collection.count_documents(
         {"method": "GET", "path": "/status"}
     )
