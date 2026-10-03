@@ -3,6 +3,11 @@ const fs = require('fs');
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
+    if (!path) {
+      reject(new Error('Cannot load the database'));
+      return;
+    }
+
     fs.readFile(path, 'utf-8', (err, data) => {
       if (err) {
         reject(new Error('Cannot load the database'));
@@ -10,17 +15,12 @@ function countStudents(path) {
       }
 
       const lines = data.split('\n').filter((line) => line.trim().length > 0);
-      let output = '';
-
       if (lines.length <= 1) {
-        output += 'Number of students: 0';
-        resolve(output);
+        resolve('Number of students: 0');
         return;
       }
 
       const students = lines.slice(1);
-      output += `Number of students: ${students.length}\n`;
-
       const fields = {};
 
       students.forEach((student) => {
@@ -36,21 +36,19 @@ function countStudents(path) {
         }
       });
 
-      const fieldKeys = Object.keys(fields);
-      fieldKeys.forEach((field, index) => {
-        output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`;
-        if (index < fieldKeys.length - 1) {
-          output += '\n';
-        }
-      });
+      const outputLines = [`Number of students: ${students.length}`];
 
-      resolve(output);
+      for (const [field, names] of Object.entries(fields)) {
+        outputLines.push(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+      }
+
+      resolve(outputLines.join('\n'));
     });
   });
 }
 
-const dbPath = process.argv[2];
 const app = express();
+const dbPath = process.argv[2];
 
 app.get('/', (req, res) => {
   res.send('Hello Holberton School!');
